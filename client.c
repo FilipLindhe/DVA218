@@ -24,8 +24,9 @@
 #define WAIT_ACK 2
 #define WAIT_SYNACK 3
 #define INIT 0
+#define SYN 4
 
-struct linkedList{
+struct linkedLists{
     int flag;
     int id;
     int seq;
@@ -34,11 +35,16 @@ struct linkedList{
     char *data;
     struct linkedList *next;
 
-};
+} linkedList;
 
 pthread_t thread1;
 pthread_mutex_t lock;
 void *readconnections(int sock);
+
+void checkSum(struct linkedList* checkSumList){
+
+
+}
 
 /* initSocketAddress
  * Initialises a sockaddr_in struct given a host name and a port.
@@ -67,6 +73,13 @@ void initSocketAddress(struct sockaddr_in *name, char *hostName, unsigned short 
 void connection(fileDescriptor, socklen_t size){
 
 
+    struct linkedLists CL;
+    CL.flag = SYN;
+    strcpy(CL->data, "hejsan\n");
+    CL.seq = -1;
+    CL.id = 0;
+    CL.crc = checkSum(&CL);
+    
 
 
 }
