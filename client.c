@@ -25,7 +25,7 @@
 #define WAIT_SYNACK 3
 #define INIT 0
 
-//HEJ
+
 
 pthread_t thread1;
 pthread_mutex_t lock;
