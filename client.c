@@ -25,7 +25,16 @@
 #define WAIT_SYNACK 3
 #define INIT 0
 
-//HEJ
+struct linkedList{
+    int flag;
+    int id;
+    int seq;
+    int windowSize;
+    int crc;
+    char *data;
+    struct linkedList *next;
+
+};
 
 pthread_t thread1;
 pthread_mutex_t lock;
@@ -56,14 +65,7 @@ void initSocketAddress(struct sockaddr_in *name, char *hostName, unsigned short 
 
 
 void connection(fileDescriptor, socklen_t size){
-    int event = 0;
-    if(event == 0){
 
-
-
-
-
-    }
 
 
 
