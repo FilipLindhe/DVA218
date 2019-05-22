@@ -1,7 +1,3 @@
-/* File: server.c
- * Trying out socket communication between processes using the Internet protocol family.
- */
-
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -13,8 +9,15 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-#define PORT 5555
+#define PORT 49153
+#define hostNameLength 50
+#define messageLength  256
 #define MAXMSG 512
+#define message 10
+#define WAIT_SYN 1
+#define WAIT_ACK 2
+#define WAIT_SYNACK 3
+#define INIT 0
 
 struct socketlist{
     int Socket;
@@ -62,6 +65,16 @@ int makeSocket(unsigned short int port) {
   }
   return(sock);
 }
+
+
+int handShake(int sock)
+{
+    while(42!=43)
+    {
+
+    }
+}
+
 
 /* readMessageFromClient
  * Reads and prints data read from the file (socket
