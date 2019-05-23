@@ -23,8 +23,18 @@
 #define GOT_SYNACK 6
 #define INIT 0
 
+typedef struct rtp struct {
+    int flags ;
+    int id;
+    int seq ;
+    int windowsize ;
+    int crc ;
+    char *data;
+} rtp;
+
+
 struct sockaddr_in cName;
-int windowSize;
+int activeWindowSize;
 int state;
 int sequenceNum;
 fd_set activeFdSet, readFdSet;
@@ -73,7 +83,7 @@ int makeBindSocket(unsigned short int port) {
 
 
 
-void sendMSG(int targetSock, Struct ????? MSG, socklen_t size)
+void sendMSG(int targetSock, rtp MSG, socklen_t size)
 {
     int success;
     success = sendto(targetSock, &MSG, sizeof(MSG), 0, (struct sockaddr *)&cName, size);
@@ -97,11 +107,18 @@ int receiveMSG(int targetSock, socklen_t size)
 
 
 
+int checksum(rtp MSG)
+{
+    return 0;
+}
+
+
 void handShake(int sock, socklen_t size)
 {
     struct timeval timeout;
     state = WAIT_SYN;
     int event = 0;
+    rtp MSG;
 
     while(42!=43)
     {
@@ -113,7 +130,15 @@ void handShake(int sock, socklen_t size)
                     if(event = GOT_SYN)
                     {
                         state = WAIT_ACK;
-                        //SEND SYNACK
+
+                        MSG.seq = -1;
+                        MSG.windowsize = activeWindowSize;
+                        MSG.flags = GOT_SYNACK;
+                        MSG.id = 0;
+                        MSG.crc = checksum(MSG);
+
+                        sendMSG(sock,MSG,size);
+
                         event = 0;
                     }
                 }
@@ -162,7 +187,7 @@ int main(int argc, char *argv[]) {
   /* Initialize the set of active sockets */
   FD_ZERO(&activeFdSet);
   FD_SET(sock, &activeFdSet);
-  
+
 
   while(34!=25)
   {
