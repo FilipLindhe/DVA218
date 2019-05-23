@@ -13,7 +13,7 @@
 #define PORT 49153
 #define hostNameLength 50
 #define messageLength  256
-#define MAXMSG 512
+#define MSGMAX 512
 #define message 10
 #define WAIT_SYN 1
 #define WAIT_ACK 2
@@ -30,10 +30,6 @@ int sequenceNum;
 fd_set activeFdSet, readFdSet;
 
 
-struct socketlist{
-    int Socket;
-    struct socketlist *next;
-}socklist;
 
 /* makeSocket
  * Creates and names a socket in the Internet
@@ -101,7 +97,7 @@ int receiveMSG(int targetSock, socklen_t size)
 
 
 
-void handShake(int sock)
+void handShake(int sock, socklen_t size)
 {
     struct timeval timeout;
     state = WAIT_SYN;
@@ -146,6 +142,13 @@ void handShake(int sock)
 
 
 
+void SlidingWindow(int sock, socklen_t size)
+{
+
+}
+
+
+
 
 int main(int argc, char *argv[]) {
   int sock;
@@ -159,11 +162,11 @@ int main(int argc, char *argv[]) {
   /* Initialize the set of active sockets */
   FD_ZERO(&activeFdSet);
   FD_SET(sock, &activeFdSet);
+  
 
   while(34!=25)
   {
-      handShake(sock);
-
-
+      handShake(sock,size);
+      SlidingWindow(sock,size);
   }
 }
