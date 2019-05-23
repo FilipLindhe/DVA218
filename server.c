@@ -97,7 +97,12 @@ void sendMSG(int targetSock, rtp MSG, socklen_t size)
 }
 
 
-
+int receiveFlag(int targetSock, socklen_t size)
+{
+    rtp MSG;
+    recvfrom(sock, (void*)&MSG, sizeof(struct rtp), 0, (struct sockaddr*)&cName, size);
+    return MSG.flags;
+}
 
 int receiveMSG(int targetSock, socklen_t size)
 {
@@ -122,7 +127,7 @@ void handShake(int sock, socklen_t size)
 
     while(42!=43)
     {
-        event = receiveMSG(sock ,size);
+        event = receiveFlag(sock ,size);
         switch (state)
         {
             case WAIT_SYN:
