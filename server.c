@@ -20,7 +20,7 @@
 #define WAIT_SYNACK 3
 #define INIT 0
 
-struct sockaddr_in clientName;
+struct sockaddr_in cName;
 int windowSize;
 int state;
 int sequenceNum;
@@ -74,8 +74,17 @@ int makeBindSocket(unsigned short int port) {
 
 void sendMSG(int targetSock, Struct ????? MSG, socklen_t size)
 {
+    int success;
+    success = sendto(targetSock, &MSG, sizeof(MSG), 0, (struct sockaddr *)&cName, size);
+
+    if(success < 0)
+    {
+        perror("sendMSG(): Could not send data to client\n");
+        exit(EXIT_FAILURE);
+    }
 
 }
+
 
 
 
