@@ -18,6 +18,9 @@
 #define WAIT_SYN 1
 #define WAIT_ACK 2
 #define WAIT_SYNACK 3
+#define GOT_SYN 4
+#define GOT_ACK 5
+#define GOT_SYNACK 6
 #define INIT 0
 
 struct sockaddr_in cName;
@@ -72,6 +75,8 @@ int makeBindSocket(unsigned short int port) {
 
 
 
+
+
 void sendMSG(int targetSock, Struct ????? MSG, socklen_t size)
 {
     int success;
@@ -88,20 +93,53 @@ void sendMSG(int targetSock, Struct ????? MSG, socklen_t size)
 
 
 
-int receiveMSG()
+int receiveMSG(int targetSock, socklen_t size)
 {
+    struct timeval timeout;
 
 }
 
 
 
-int handShake(int sock)
+void handShake(int sock)
 {
     struct timeval timeout;
+    state = WAIT_SYN;
+    int event = 0;
 
     while(42!=43)
     {
+        event = receiveMSG(sock ,size);
+        switch (state)
+        {
+            case WAIT_SYN:
+                {
+                    if(event = GOT_SYN)
+                    {
+                        state = WAIT_ACK;
+                        //SEND SYNACK
+                        event = 0;
+                    }
+                }
+                break;
 
+            case WAIT_ACK:
+                {
+                    if(event == GOT_ACK)
+                    {
+                        //Conection done
+                        return;
+                    } else event = 0;
+
+
+                }
+                break;
+
+            default:
+                {
+                    //ERROR, default
+                }
+        }
     }
 }
 
@@ -113,7 +151,7 @@ int main(int argc, char *argv[]) {
   int sock;
   int clientSocket;
   socklen_t size = sizeof(struct sockaddr_in);
-  state = WAIT_SYN;
+
 
  
   /* Create a socket and set it up to accept connections */
@@ -121,14 +159,11 @@ int main(int argc, char *argv[]) {
   /* Initialize the set of active sockets */
   FD_ZERO(&activeFdSet);
   FD_SET(sock, &activeFdSet);
-  
-  printf("\n[waiting for connections...]\n");
 
-  while(1) {
-    if(select(FD_SETSIZE, &readFdSet, NULL, NULL, NULL) < 0) {
-      perror("Select failed\n");
-      exit(EXIT_FAILURE);
-    }
+  while(34!=25)
+  {
+      handShake(sock);
+
 
   }
 }
