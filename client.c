@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/times.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <pthread.h>
@@ -17,17 +19,28 @@
 #define WAIT_SYN 1
 #define WAIT_ACK 2
 #define WAIT_SYNACK 3
+#define GOT_SYN 4
+#define GOT_ACK 5
+#define GOT_SYNACK 6
 #define INIT 0
 
+typedef struct rtp struct {
+    int flags ;
+    int id;
+    int seq ;
+    int windowsize;
+    int crc ;
+    char *data;
+} rtp;
 
 
-pthread_t thread1;
-pthread_mutex_t lock;
-void *readconnections(int sock);
+struct sockaddr_in cName;
+int activeWindowSize = 2;
+int state;
+int sequenceNum;
+fd_set activeFdSet, readFdSet;
 
-/* initSocketAddress
- * Initialises a sockaddr_in struct given a host name and a port.
- */
+
 void initSocketAddress(struct sockaddr_in *name, char *hostName, unsigned short int port) {
   struct hostent *hostInfo; /* Contains info about the host */
   /* Socket address format set to AF_INET for Internet use. */
@@ -37,31 +50,49 @@ void initSocketAddress(struct sockaddr_in *name, char *hostName, unsigned short 
   /* Get info about host. */
   hostInfo = gethostbyname(hostName); 
   if(hostInfo == NULL) {
-    fprintf(stderr, "initSocketAddress - Unknown host %s\n",hostName);
+    fprintf(stderr, "initSocketAddress(): Unknown host %s\n",hostName);
     exit(EXIT_FAILURE);
   }
   /* Fill in the host name into the sockaddr_in struct. */
   name->sin_addr = *(struct in_addr *)hostInfo->h_addr;
 }
-/* writeMessage
- * Writes the string message to the file (socket) 
- * denoted by fileDescriptor.
- */
-
-
-void connection(fileDescriptor, socklen_t size){
-    int event = 0;
-    if(event == 0){
 
 
 
 
+void sendMSG(int targetSock, rtp MSG, socklen_t size)
+{
+    int success;
+    success = sendto(targetSock, &MSG, sizeof(MSG), 0, (struct sockaddr *)&cName, size);
 
+    if(success < 0)
+    {
+        perror("sendMSG(): Could not send data to client\n");
+        exit(EXIT_FAILURE);
     }
 
-
-
 }
+
+
+int receiveFlag(int targetSock, socklen_t size)
+{
+    rtp MSG;
+    recvfrom(sock, (void*)&MSG, sizeof(struct rtp), 0, (struct sockaddr*)&cName, size);
+    return MSG.flags;
+}
+
+
+
+int receiveMSG(int targetSock, socklen_t size)
+{
+    struct timeval timeout;
+    //...
+}
+
+
+
+
+
 
 int main(int argc, char *argv[]) {
   int sock;

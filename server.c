@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
   int sock;
   int clientSocket;
   socklen_t size = sizeof(struct sockaddr_in);
-
+  char buffer[MAXMSG];
 
  
   /* Create a socket and set it up to accept connections */
